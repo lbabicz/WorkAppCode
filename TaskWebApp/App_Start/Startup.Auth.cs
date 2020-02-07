@@ -13,6 +13,7 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using System.Web.Http;
 using TaskWebApp.Utils;
+using Microsoft.IdentityModel.Logging;
 
 namespace TaskWebApp
 {
@@ -24,12 +25,15 @@ namespace TaskWebApp
 
 		public void ConfigureAuth(IAppBuilder app)
 		{
+			IdentityModelEventSource.ShowPII = true;
 			// Required for Azure webapps, as by default they force TLS 1.2 and this project attempts 1.0
 			ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
 
 			app.SetDefaultSignInAsAuthenticationType(CookieAuthenticationDefaults.AuthenticationType);
 
-			app.UseCookieAuthentication(new CookieAuthenticationOptions());
+			app.UseCookieAuthentication(new CookieAuthenticationOptions {
+				CookieName = "SZTracker"
+			});
 
 			app.UseOpenIdConnectAuthentication(
 				new OpenIdConnectAuthenticationOptions
